@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Amin;
 
+import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.RED;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
@@ -27,7 +29,9 @@ public class SenzorDeCuloareTest extends LinearOpMode {
             ColorSensor colorSensor = robot.color;
 
             if (
-                    !(robot.color.red() <= 75)
+                    !(robot.color.red() <= RED
+
+                    )
 //                            &&
 //                            (robot.color.green() >= 70 && robot.color.red() <= 80)
 //                            &&

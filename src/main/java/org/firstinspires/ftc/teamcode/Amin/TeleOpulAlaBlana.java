@@ -25,6 +25,7 @@ import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_ARUNCA_CU
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_MARKER_IA;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_MARKER_LUAT;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_NORMAL_CUVA;
+import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.initial;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -47,11 +48,11 @@ public class TeleOpulAlaBlana extends LinearOpMode {
 
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+
         waitForStart();
 
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
-            robot.setPoseEstimate(pe_unde_e_oare);
 
             // joysticks
             double r = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
@@ -141,6 +142,7 @@ public class TeleOpulAlaBlana extends LinearOpMode {
 //            } else {
 //                robot.setBratMarkerPower(0);
 //            }
+
             while(gamepad2.dpad_up){
                 robot.setBratMarkerPower(POWER_BRAT_MARKER);
             }

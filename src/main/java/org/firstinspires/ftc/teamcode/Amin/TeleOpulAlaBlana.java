@@ -9,23 +9,17 @@
  *
  *
  */
-
 package org.firstinspires.ftc.teamcode.Amin;
 
-import static org.firstinspires.ftc.teamcode.Amin.LocalizareFrt.pe_unde_e_oare;
-import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.FULL_POWER;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.LOW_POWER;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.MEDIUM_POWER;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_ABS;
-import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_BRAT;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_BRAT_MARKER;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_BRAT_TELEOP;
+import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_GHEARA_MARKER;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_RATA;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_ARUNCA_CUVA;
-import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_MARKER_IA;
-import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_MARKER_LUAT;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_NORMAL_CUVA;
-import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.initial;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -34,7 +28,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
 
 @TeleOp()
 public class TeleOpulAlaBlana extends LinearOpMode {
@@ -51,10 +44,15 @@ public class TeleOpulAlaBlana extends LinearOpMode {
 
         waitForStart();
 
-        if (isStopRequested()) return;
-        while (opModeIsActive() && !isStopRequested()) {
+        while (!opModeIsActive() && !isStopRequested()) {
+            telemetry.update();
+        }
 
+        if (isStopRequested()) return;
+
+        while (opModeIsActive() && !isStopRequested()) {
             // joysticks
+            
             double r = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = (gamepad1.right_stick_x);
@@ -143,35 +141,25 @@ public class TeleOpulAlaBlana extends LinearOpMode {
 //                robot.setBratMarkerPower(0);
 //            }
 
-            while(gamepad2.dpad_up){
+            if(gamepad2.dpad_up){
                 robot.setBratMarkerPower(POWER_BRAT_MARKER);
             }
+            else robot.setBratMarkerPower(0);
 
-            while(gamepad2.dpad_down){
+            if(gamepad2.dpad_down){
                 robot.setBratMarkerPower(-POWER_BRAT_MARKER);
             }
-            robot.setBratMarkerPower(0);
+            else robot.setBratMarkerPower(0);
 
-            while(gamepad2.dpad_left){
-                robot.setGhearaPower(POWER_BRAT_MARKER);
+            if(gamepad1.a){
+                robot.setGhearaPower(POWER_GHEARA_MARKER);
             }
+            else robot.setGhearaPower(0);
 
-            while(gamepad2.dpad_right){
-                robot.setGhearaPower(-POWER_BRAT_MARKER);
+            if(gamepad1.b){
+                robot.setGhearaPower(-POWER_GHEARA_MARKER);
             }
-            robot.setGhearaPower(0);
-//
-//            if (gamepad2.dpad_left) {
-//                robot.setGhearaPower(POWER_BRAT_MARKER);
-//            } else {
-//                robot.setGhearaPower(0);
-//            }
-//
-//            if (gamepad2.dpad_right) {
-//                robot.setGhearaPower(-POWER_BRAT_MARKER);
-//            } else {
-//                robot.setGhearaPower(0);
-//            }
+            else robot.setGhearaPower(0);
 
             robot.update();
         }

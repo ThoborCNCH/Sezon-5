@@ -23,6 +23,7 @@ import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_NORMAL_CU
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -37,31 +38,37 @@ public class TeleOpulAlaBlana extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive robot = new SampleMecanumDrive(hardwareMap);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//        robot.color.enableLed(false);
 
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
-        waitForStart();
+//        waitForStart();
 
         while (!opModeIsActive() && !isStopRequested()) {
-            telemetry.update();
         }
 
-        if (isStopRequested()) return;
+//        if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
             // joysticks
             
-            double r = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-            double rightX = (gamepad1.right_stick_x);
-            v1 = r * Math.cos(robotAngle) + rightX;
-            v2 = r * Math.sin(robotAngle) - rightX;
-            v3 = r * Math.sin(robotAngle) + rightX;
-            v4 = r * Math.cos(robotAngle) - rightX;
-
-            robot.bagaViteza(v1, v2, v3, v4);
+//            double r = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+//            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+//            double rightX = (gamepad1.right_stick_x);
+//            v1 = r * Math.cos(robotAngle) + rightX;
+//            v2 = r * Math.sin(robotAngle) - rightX;
+//            v3 = r * Math.sin(robotAngle) + rightX;
+//            v4 = r * Math.cos(robotAngle) - rightX;
+//
+//            robot.bagaViteza(v1, v2, v3, v4);
+            robot.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y * 0.8,
+                            -gamepad1.left_stick_x * 0.8,
+                            -gamepad1.right_stick_x * 0.8
+                    )
+            );
 
             // miscari din dpad uri
             while (gamepad1.dpad_down) {
@@ -143,25 +150,27 @@ public class TeleOpulAlaBlana extends LinearOpMode {
 
             if(gamepad2.dpad_up){
                 robot.setBratMarkerPower(POWER_BRAT_MARKER);
+                robot.update();
             }
             else robot.setBratMarkerPower(0);
 
             if(gamepad2.dpad_down){
                 robot.setBratMarkerPower(-POWER_BRAT_MARKER);
+                robot.update();
+
             }
             else robot.setBratMarkerPower(0);
 
-            if(gamepad1.a){
+            if(gamepad2.a){
                 robot.setGhearaPower(POWER_GHEARA_MARKER);
             }
             else robot.setGhearaPower(0);
 
-            if(gamepad1.b){
+            if(gamepad2.b){
                 robot.setGhearaPower(-POWER_GHEARA_MARKER);
             }
             else robot.setGhearaPower(0);
 
-            robot.update();
         }
     }
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Amin;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp
 @Config
+@Disabled
+
 public class SIMPLE extends LinearOpMode {
     private DcMotor leftFront, leftRear, rightRear, rightFront;
     public static double power = 0.3;

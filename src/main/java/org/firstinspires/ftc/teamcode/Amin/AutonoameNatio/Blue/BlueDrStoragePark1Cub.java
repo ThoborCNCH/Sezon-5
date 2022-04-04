@@ -83,10 +83,11 @@ public class BlueDrStoragePark1Cub extends LinearOpMode {
 
     private void sus() throws InterruptedException {
         Trajectory la_rate_dute = robot.trajectoryBuilder(initialBLUEDR)
-                .lineToConstantHeading(la_rata_vectorBLUE)
+//                .lineToConstantHeading(la_rata_vectorBLUE)
+                .lineToLinearHeading(la_rata_vectorBLUE)
                 .build();
         robot.followTrajectory(la_rate_dute);
-        robot.invarteRata();
+        robot.invarteRataAlbastru();
 
         TrajectorySequence la_hub_traj = robot.trajectorySequenceBuilder(la_rate_dute.end())
                 .lineToConstantHeading(la_hub_simple_part1BLUE)
@@ -113,7 +114,7 @@ public class BlueDrStoragePark1Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.8, () -> {
+                .addTemporalMarker(0.6, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -127,17 +128,18 @@ public class BlueDrStoragePark1Cub extends LinearOpMode {
 
     private void mijloc() throws InterruptedException {
         Trajectory la_rate_dute = robot.trajectoryBuilder(initialBLUEDR)
-                .lineToConstantHeading(la_rata_vectorBLUE)
+//                .lineToConstantHeading(la_rata_vectorBLUE)
+                .lineToLinearHeading(la_rata_vectorBLUE)
                 .build();
         robot.followTrajectory(la_rate_dute);
-        robot.invarteRata();
+        robot.invarteRataAlbastru();
 
         TrajectorySequence la_hub_traj = robot.trajectorySequenceBuilder(la_rate_dute.end())
                 .lineToConstantHeading(la_hub_simple_part1BLUE)
                 .addTemporalMarker(0.8, () -> {
                     robot.brat.setPower(-1);
                 })
-                .addTemporalMarker(1.370, () -> {
+                .addTemporalMarker(1.320, () -> {
                     robot.brat.setPower(0);
                 })
                 .lineToLinearHeading(la_hub_simple_part2BLUE)
@@ -157,7 +159,7 @@ public class BlueDrStoragePark1Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.8, () -> {
+                .addTemporalMarker(0.4, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -171,10 +173,11 @@ public class BlueDrStoragePark1Cub extends LinearOpMode {
 
     private void jos() throws InterruptedException{
         Trajectory la_rate_dute = robot.trajectoryBuilder(initialBLUEDR)
-                .lineToConstantHeading(la_rata_vectorBLUE)
+//                .lineToConstantHeading(la_rata_vectorBLUE)
+                .lineToLinearHeading(la_rata_vectorBLUE)
                 .build();
         robot.followTrajectory(la_rate_dute);
-        robot.invarteRata();
+        robot.invarteRataAlbastru();
 
         TrajectorySequence la_hub_traj = robot.trajectorySequenceBuilder(la_rate_dute.end())
                 .lineToConstantHeading(la_hub_simple_part1BLUE)
@@ -201,7 +204,7 @@ public class BlueDrStoragePark1Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.8, () -> {
+                .addTemporalMarker(0.3, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();

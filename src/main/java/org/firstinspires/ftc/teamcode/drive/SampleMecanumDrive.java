@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
@@ -22,10 +20,10 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -33,6 +31,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -66,16 +65,16 @@ import static java.lang.Thread.sleep;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    private final DcMotor brat_marker;
+    public final DcMotor brat_marker;
     private final CRServo gheara;
     public final Servo cuva;
     private final CRServo absortie;
     public final DcMotorEx brat;
     public final CRServo rata;
-    public ColorSensor color;
     private double diameter_hex = 0.787402;
     private double ticks = 288;
     private double counts_per_inch = ticks / (diameter_hex * Math.PI);
+    public DistanceSensor distanceSensor;
 
 
     //    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, 0);
@@ -134,10 +133,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         brat_marker = hardwareMap.get(DcMotor.class, "brat_marker");
         gheara = hardwareMap.get(CRServo.class, "gheara");
 
-        brat_marker.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor_range");
 
-        color = hardwareMap.get(ColorSensor.class, "color_frt");
-        color.enableLed(true);
+        brat_marker.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         brat = hardwareMap.get(DcMotorEx.class, "brat");
         absortie = hardwareMap.get(CRServo.class, "absortie");
@@ -415,6 +413,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         setRataPower(0);
     }
 
+    public void invarteRataAlbastru() throws InterruptedException {
+        setRataPower(POWER_RATA);
+        sleep(3500);
+        setRataPower(0);
+    }
     public void setBratMarkerPower(double power){
         brat_marker.setPower(power);
     }
@@ -423,4 +426,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         gheara.setPower(power);
     }
 
+//    public void testTakeIt(){
+//        if(this.distanceSensor.getDistance(DistanceUnit.CM) <= 11.5){
+//
+//        }
+//    }
 }

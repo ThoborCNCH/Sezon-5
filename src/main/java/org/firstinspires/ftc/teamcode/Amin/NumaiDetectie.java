@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Amin;
 
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.initial;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,6 +13,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @TeleOp
+@Disabled
+
 public class NumaiDetectie extends LinearOpMode {
 
     @Override

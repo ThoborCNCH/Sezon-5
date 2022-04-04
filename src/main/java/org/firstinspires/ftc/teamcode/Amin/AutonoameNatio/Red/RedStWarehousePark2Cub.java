@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Amin.AutonoameNatio.Red;
 
+import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.DISTANCE;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_ABS;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_ARUNCA_CUVA;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_NORMAL_CUVA;
@@ -27,6 +28,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Amin.LocalizareFrt;
 import org.firstinspires.ftc.teamcode.Amin.incercareDetectie3Patrate.Detectie;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
@@ -151,18 +153,23 @@ public class RedStWarehousePark2Cub extends LinearOpMode {
         timp.reset();
 
         double lowPower = -0.4;
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
+        while(robot.distanceSensor.getDistance(DistanceUnit.CM) <= DISTANCE && timp.seconds() <= SEC && opModeIsActive() ){
             robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
             robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
         }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
+
+//        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
         robot.setAbsortiePower(-POWER_ABS);
         robot.setMotorPowers(0, 0, 0, 0);
 
@@ -281,18 +288,23 @@ public class RedStWarehousePark2Cub extends LinearOpMode {
         timp.reset();
 
         double lowPower = -0.4;
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
+        while(robot.distanceSensor.getDistance(DistanceUnit.CM) <= DISTANCE && timp.seconds() <= SEC && opModeIsActive() ){
             robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
             robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
         }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
+
+//        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
         robot.setAbsortiePower(-POWER_ABS);
         robot.setMotorPowers(0, 0, 0, 0);
 
@@ -410,18 +422,23 @@ public class RedStWarehousePark2Cub extends LinearOpMode {
         timp.reset();
 
         double lowPower = -0.4;
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
+        while(robot.distanceSensor.getDistance(DistanceUnit.CM) <= DISTANCE && timp.seconds() <= SEC && opModeIsActive() ){
             robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
             robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
         }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
+
+//        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
         robot.setAbsortiePower(-POWER_ABS);
         robot.setMotorPowers(0, 0, 0, 0);
 

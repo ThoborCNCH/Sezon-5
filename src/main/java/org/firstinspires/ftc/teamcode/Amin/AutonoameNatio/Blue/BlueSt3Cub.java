@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Amin.AutonoameNatio.Blue;
 
+import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.DISTANCE;
+import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.PARK_BLUE_ST_READY;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POWER_ABS;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_ARUNCA_CUVA;
 import static org.firstinspires.ftc.teamcode.Amin.NuSeMaiUmbla.POZITIE_NORMAL_CUVA;
@@ -23,6 +25,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Amin.LocalizareFrt;
 import org.firstinspires.ftc.teamcode.Amin.incercareDetectie3Patrate.Detectie;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
@@ -36,6 +39,8 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 @Autonomous(group = "blue")
 public class BlueSt3Cub extends LinearOpMode {
     SampleMecanumDrive robot;
+    private double lowPower = -0.18;
+
     OpenCvCamera camera;
     private ElapsedTime timp = new ElapsedTime();
     private final long sleep = 650;
@@ -43,7 +48,6 @@ public class BlueSt3Cub extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
 
         robot = new SampleMecanumDrive(hardwareMap);
 
@@ -73,6 +77,8 @@ public class BlueSt3Cub extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
+            telemetry.addData("detectie: ", detectie.getA());
+            telemetry.update();
             switch (detectie.getA()) {
                 case 1:
                     mijloc();
@@ -115,10 +121,10 @@ public class BlueSt3Cub extends LinearOpMode {
                         , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(35))
 //                )
-                .addTemporalMarker(0, () -> {
+                .addTemporalMarker(0.5, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.8, () -> {
+                .addTemporalMarker(1.1, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -143,19 +149,23 @@ public class BlueSt3Cub extends LinearOpMode {
 
         timp.reset();
 
-        double lowPower = -0.4;
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
+        while (robot.distanceSensor.getDistance(DistanceUnit.CM) > DISTANCE && timp.seconds() <= SEC && opModeIsActive()) {
             robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
             robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
         }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
+
+        //        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
         robot.setAbsortiePower(-POWER_ABS);
         robot.setMotorPowers(0, 0, 0, 0);
 
@@ -167,13 +177,13 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.setAbsortiePower(-POWER_ABS);
                 })
-                .addTemporalMarker(0.5, () -> {
+                .addTemporalMarker(1, () -> {
                     robot.brat.setPower(-1);
                 })
                 .addTemporalMarker(time -> time * 0.6, () -> {
                     robot.setAbsortiePower(0);
                 })
-                .addTemporalMarker(time -> time * 0.8, () -> {
+                .addDisplacementMarker(() -> {
                     robot.brat.setPower(0);
 //                    robot.setAbsortiePower(0);
                 })
@@ -202,7 +212,229 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.75, () -> {
+                .addTemporalMarker(0.55, () -> {
+                    robot.brat.setPower(0);
+                })
+                .build();
+
+        robot.followTrajectory(bare2);
+
+//        robot.setMotorPowers(1,1,1,1);
+//        sleep(500);
+//        robot.setMotorPowers(0,0,0,0);
+
+
+        Trajectory ia_l_frt2 = robot.trajectoryBuilder(bare2.end())
+                .lineToLinearHeading(inauntru2BLUE
+                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(30))
+//        )
+                .addTemporalMarker(0, () -> {
+                    robot.setAbsortiePower(POWER_ABS);
+                })
+//                .addTemporalMarker(time -> time *3 0.9, () -> {
+//                    robot.setAbsortiePower(0);
+//                })
+                .build();
+        robot.followTrajectory(ia_l_frt2);
+        robot.setAbsortiePower(POWER_ABS);
+
+        timp.reset();
+        while (robot.distanceSensor.getDistance(DistanceUnit.CM) > DISTANCE && timp.seconds() <= SEC && opModeIsActive()) {
+            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+            robot.setAbsortiePower(POWER_ABS);
+        }
+
+//        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
+        robot.setAbsortiePower(-POWER_ABS);
+        robot.setMotorPowers(0, 0, 0, 0);
+
+
+        Trajectory du_l_frt2 = robot.trajectoryBuilder(robot.getPoseEstimate())
+                .lineToLinearHeading(back_to_initial2BLUE
+                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(30))
+//        )
+                .addTemporalMarker(0, () -> {
+                    robot.setAbsortiePower(-POWER_ABS);
+                })
+                .addTemporalMarker(1, () -> {
+                    robot.brat.setPower(-1);
+                })
+                .addTemporalMarker(time -> time * 0.8, () -> {
+                    robot.setAbsortiePower(0);
+                })
+                .addDisplacementMarker(() -> {
+                    robot.brat.setPower(0);
+//                    robot.setAbsortiePower(0);
+                })
+                .build();
+        robot.followTrajectory(du_l_frt2);
+
+        Trajectory right2 = robot.trajectoryBuilder(du_l_frt2.end())
+                .lineToLinearHeading(la_hub_pose3BLUE)
+                .addDisplacementMarker(() -> {
+                    robot.cuva.setPosition(POZITIE_ARUNCA_CUVA);
+                })
+                .build();
+        robot.followTrajectory(right2);
+        sleep(sleep);
+        robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
+
+        TrajectorySequence park = robot.trajectorySequenceBuilder(right2.end())
+                .lineToLinearHeading(PARK_BLUE_ST_READY)
+                .lineToLinearHeading(park_poseBLUE
+                        , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(40))
+//        )
+                .strafeLeft(25)
+                .addTemporalMarker(0, () -> {
+                    robot.brat.setPower(1);
+                })
+                .addTemporalMarker(0.7, () -> {
+                    robot.brat.setPower(0);
+                })
+                .build();
+
+        robot.followTrajectorySequence(park);
+
+        stop();
+
+    }
+
+    private void mijloc() throws InterruptedException {
+//        ColorSensor colorSensor = robot.color;
+        Trajectory mergi_la_hub = robot.trajectoryBuilder(initialBLUE)
+                .lineToConstantHeading(la_hubBLUE)
+                .addTemporalMarker(0.8, () -> {
+                    robot.brat.setPower(-1);
+                })
+                .addTemporalMarker(1.4, () -> {
+                    robot.brat.setPower(0);
+                })
+                .addDisplacementMarker(() -> {
+                    robot.cuva.setPosition(POZITIE_ARUNCA_CUVA);
+                })
+                .build();
+
+        robot.followTrajectory(mergi_la_hub);
+
+        sleep(sleep);
+        robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
+
+        Trajectory bare = robot.trajectoryBuilder(mergi_la_hub.end(), true)
+                .lineToLinearHeading(back_to_initialBLUE
+                        , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(35))
+//                )
+                .addTemporalMarker(0.8, () -> {
+                    robot.brat.setPower(1);
+                })
+                .addTemporalMarker(1.215, () -> {
+                    robot.brat.setPower(0);
+                })
+                .build();
+
+        robot.followTrajectory(bare);
+
+
+        Trajectory ia_l_frt = robot.trajectoryBuilder(bare.end())
+                .lineToLinearHeading(inauntru1BLUE
+                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(25))
+//        )
+                .addTemporalMarker(0, () -> {
+                    robot.setAbsortiePower(POWER_ABS);
+                })
+//                .addTemporalMarker(time -> time * 0.9, () -> {
+//                    robot.setAbsortiePower(0);
+//                })
+                .build();
+        robot.followTrajectory(ia_l_frt);
+
+
+        timp.reset();
+
+
+
+        while (robot.distanceSensor.getDistance(DistanceUnit.CM) > DISTANCE && timp.seconds() <= SEC && opModeIsActive()) {
+            telemetry.addLine(String.valueOf(robot.distanceSensor.getDistance(DistanceUnit.CM)));
+            telemetry.update();
+
+            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+            robot.setAbsortiePower(POWER_ABS);
+        }
+
+//        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
+        robot.setAbsortiePower(-POWER_ABS);
+        robot.setMotorPowers(0, 0, 0, 0);
+
+        Trajectory du_l_frt = robot.trajectoryBuilder(robot.getPoseEstimate())
+                .lineToLinearHeading(back_to_initialBLUE
+                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(30))
+//        )
+                .addTemporalMarker(0, () -> {
+                    robot.setAbsortiePower(-POWER_ABS);
+                })
+                .addTemporalMarker(1, () -> {
+                    robot.brat.setPower(-1);
+                })
+                .addTemporalMarker(time -> time * 0.6, () -> {
+                    robot.setAbsortiePower(0);
+                })
+                .addDisplacementMarker(() -> {
+                    robot.brat.setPower(0);
+//                    robot.setAbsortiePower(0);
+                })
+                .build();
+        robot.followTrajectory(du_l_frt);
+
+        Trajectory right = robot.trajectoryBuilder(du_l_frt.end())
+                .lineToLinearHeading(la_hub_pose2BLUE
+//                        , SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(15))
+                )
+                .addDisplacementMarker(() -> {
+                    robot.cuva.setPosition(POZITIE_ARUNCA_CUVA);
+                })
+                .build();
+        robot.followTrajectory(right);
+        sleep(sleep);
+        robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
+
+
+        Trajectory bare2 = robot.trajectoryBuilder(right.end(), true)
+                .lineToLinearHeading(back_to_initial2BLUE
+                        , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(35))
+//                )
+                .addTemporalMarker(0, () -> {
+                    robot.brat.setPower(1);
+                })
+                .addTemporalMarker(0.6, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -230,19 +462,26 @@ public class BlueSt3Cub extends LinearOpMode {
         robot.setAbsortiePower(POWER_ABS);
 
         timp.reset();
+        while (robot.distanceSensor.getDistance(DistanceUnit.CM) > DISTANCE && timp.seconds() <= SEC && opModeIsActive()) {
+            telemetry.addLine(String.valueOf(robot.distanceSensor.getDistance(DistanceUnit.CM)));
+            telemetry.update();
 
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
             robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
             robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
         }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
+
+//        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
         robot.setAbsortiePower(-POWER_ABS);
         robot.setMotorPowers(0, 0, 0, 0);
 
@@ -255,14 +494,15 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.setAbsortiePower(-POWER_ABS);
                 })
-                .addTemporalMarker(0.5, () -> {
+                .addTemporalMarker(1, () -> {
                     robot.brat.setPower(-1);
                 })
                 .addTemporalMarker(time -> time * 0.8, () -> {
                     robot.setAbsortiePower(0);
                 })
-                .addTemporalMarker(time -> time * 0.9, () -> {
+                .addDisplacementMarker(() -> {
                     robot.brat.setPower(0);
+//                    robot.setAbsortiePower(0);
                 })
                 .build();
         robot.followTrajectory(du_l_frt2);
@@ -278,7 +518,7 @@ public class BlueSt3Cub extends LinearOpMode {
         robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
 
         TrajectorySequence park = robot.trajectorySequenceBuilder(right2.end())
-                .lineToLinearHeading(new Pose2d(11.004788048944423, 68.8000000, Math.toRadians(178)))
+                .lineToLinearHeading(PARK_BLUE_ST_READY)
                 .lineToLinearHeading(park_poseBLUE
                         , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(40))
@@ -287,7 +527,7 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.6, () -> {
+                .addTemporalMarker(0.7, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -298,14 +538,15 @@ public class BlueSt3Cub extends LinearOpMode {
 
     }
 
-    private void mijloc()  throws InterruptedException {
-//        ColorSensor colorSensor = robot.color;
+    private void jos() throws InterruptedException {
+        telemetry.addLine("jos");
+        telemetry.update();
         Trajectory mergi_la_hub = robot.trajectoryBuilder(initialBLUE)
                 .lineToConstantHeading(la_hubBLUE)
                 .addTemporalMarker(0.8, () -> {
                     robot.brat.setPower(-1);
                 })
-                .addTemporalMarker(1.370, () -> {
+                .addTemporalMarker(1.31, () -> {
                     robot.brat.setPower(0);
                 })
                 .addDisplacementMarker(() -> {
@@ -324,10 +565,10 @@ public class BlueSt3Cub extends LinearOpMode {
                         , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(35))
 //                )
-                .addTemporalMarker(0, () -> {
+                .addTemporalMarker(0.8, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.8, () -> {
+                .addTemporalMarker(1.17, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -352,19 +593,23 @@ public class BlueSt3Cub extends LinearOpMode {
 
         timp.reset();
 
-        double lowPower = -0.4;
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
+        while (robot.distanceSensor.getDistance(DistanceUnit.CM) > DISTANCE && timp.seconds() <= SEC && opModeIsActive()) {
             robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
             robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
         }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
+
+//        while (
+//                (robot.color.red() <= RED)
+//                        && timp.seconds() <= SEC && opModeIsActive()) {
+//            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
+//            robot.setAbsortiePower(POWER_ABS);
+//            telemetry.addData("Red  ", robot.color.red());
+//            telemetry.update();
+//        }
+//        if (robot.color.red() > RED) {
+//            telemetry.addLine("l-am luat in pula");
+//            telemetry.update();
+//        }
         robot.setAbsortiePower(-POWER_ABS);
         robot.setMotorPowers(0, 0, 0, 0);
 
@@ -376,13 +621,13 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.setAbsortiePower(-POWER_ABS);
                 })
-                .addTemporalMarker(0.5, () -> {
+                .addTemporalMarker(1, () -> {
                     robot.brat.setPower(-1);
                 })
-                .addTemporalMarker(time -> time * 0.6, () -> {
+                .addTemporalMarker(time -> time * 0.9, () -> {
                     robot.setAbsortiePower(0);
                 })
-                .addTemporalMarker(time -> time * 0.8, () -> {
+                .addDisplacementMarker(() -> {
                     robot.brat.setPower(0);
 //                    robot.setAbsortiePower(0);
                 })
@@ -411,7 +656,7 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.75, () -> {
+                .addTemporalMarker(0.55, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -440,18 +685,11 @@ public class BlueSt3Cub extends LinearOpMode {
 
         timp.reset();
 
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
+        while (robot.distanceSensor.getDistance(DistanceUnit.CM) > DISTANCE && timp.seconds() <= SEC && opModeIsActive()) {
             robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
             robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
         }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
+
         robot.setAbsortiePower(-POWER_ABS);
         robot.setMotorPowers(0, 0, 0, 0);
 
@@ -464,13 +702,13 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.setAbsortiePower(-POWER_ABS);
                 })
-                .addTemporalMarker(0.5, () -> {
+                .addTemporalMarker(1, () -> {
                     robot.brat.setPower(-1);
                 })
                 .addTemporalMarker(time -> time * 0.8, () -> {
                     robot.setAbsortiePower(0);
                 })
-                .addTemporalMarker(time -> time * 0.9, () -> {
+                .addDisplacementMarker(() -> {
                     robot.brat.setPower(0);
                 })
                 .build();
@@ -487,7 +725,7 @@ public class BlueSt3Cub extends LinearOpMode {
         robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
 
         TrajectorySequence park = robot.trajectorySequenceBuilder(right2.end())
-                .lineToLinearHeading(new Pose2d(11.004788048944423, 68.8000000, Math.toRadians(178)))
+                .lineToLinearHeading(PARK_BLUE_ST_READY)
                 .lineToLinearHeading(park_poseBLUE
                         , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(40))
@@ -496,216 +734,7 @@ public class BlueSt3Cub extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     robot.brat.setPower(1);
                 })
-                .addTemporalMarker(0.6, () -> {
-                    robot.brat.setPower(0);
-                })
-                .build();
-
-        robot.followTrajectorySequence(park);
-
-        stop();
-
-    }
-
-    private void jos()  throws InterruptedException {
-//        ColorSensor colorSensor = robot.color;
-        Trajectory mergi_la_hub = robot.trajectoryBuilder(initialBLUE)
-                .lineToConstantHeading(la_hubBLUE)
-                .addTemporalMarker(0.8, () -> {
-                    robot.brat.setPower(-1);
-                })
-                .addTemporalMarker(1.243, () -> {
-                    robot.brat.setPower(0);
-                })
-                .addDisplacementMarker(() -> {
-                    robot.cuva.setPosition(POZITIE_ARUNCA_CUVA);
-                })
-                .build();
-
-        robot.followTrajectory(mergi_la_hub);
-
-        sleep(sleep);
-        robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
-
-
-        Trajectory bare = robot.trajectoryBuilder(mergi_la_hub.end(), true)
-                .lineToLinearHeading(back_to_initialBLUE
-                        , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(35))
-//                )
-                .addTemporalMarker(0, () -> {
-                    robot.brat.setPower(1);
-                })
-                .addTemporalMarker(0.443, () -> {
-                    robot.brat.setPower(0);
-                })
-                .build();
-
-        robot.followTrajectory(bare);
-
-
-        Trajectory ia_l_frt = robot.trajectoryBuilder(bare.end())
-                .lineToLinearHeading(inauntru1BLUE
-                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(25))
-//        )
-                .addTemporalMarker(0, () -> {
-                    robot.setAbsortiePower(POWER_ABS);
-                })
-//                .addTemporalMarker(time -> time * 0.9, () -> {
-//                    robot.setAbsortiePower(0);
-//                })
-                .build();
-        robot.followTrajectory(ia_l_frt);
-
-
-        timp.reset();
-
-        double lowPower = -0.4;
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
-            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
-            robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
-        }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
-        robot.setAbsortiePower(-POWER_ABS);
-        robot.setMotorPowers(0, 0, 0, 0);
-
-        Trajectory du_l_frt = robot.trajectoryBuilder(robot.getPoseEstimate())
-                .lineToLinearHeading(back_to_initialBLUE
-                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(30))
-//        )
-                .addTemporalMarker(0, () -> {
-                    robot.setAbsortiePower(-POWER_ABS);
-                })
-                .addTemporalMarker(0.5, () -> {
-                    robot.brat.setPower(-1);
-                })
-                .addTemporalMarker(time -> time * 0.6, () -> {
-                    robot.setAbsortiePower(0);
-                })
-                .addTemporalMarker(time -> time * 0.8, () -> {
-                    robot.brat.setPower(0);
-//                    robot.setAbsortiePower(0);
-                })
-                .build();
-        robot.followTrajectory(du_l_frt);
-
-        Trajectory right = robot.trajectoryBuilder(du_l_frt.end())
-                .lineToLinearHeading(la_hub_pose2BLUE
-//                        , SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(15))
-                )
-                .addDisplacementMarker(() -> {
-                    robot.cuva.setPosition(POZITIE_ARUNCA_CUVA);
-                })
-                .build();
-        robot.followTrajectory(right);
-        sleep(sleep);
-        robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
-
-
-        Trajectory bare2 = robot.trajectoryBuilder(right.end(), true)
-                .lineToLinearHeading(back_to_initial2BLUE
-                        , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(35))
-//                )
-                .addTemporalMarker(0, () -> {
-                    robot.brat.setPower(1);
-                })
-                .addTemporalMarker(0.75, () -> {
-                    robot.brat.setPower(0);
-                })
-                .build();
-
-        robot.followTrajectory(bare2);
-
-//        robot.setMotorPowers(1,1,1,1);
-//        sleep(500);
-//        robot.setMotorPowers(0,0,0,0);
-
-
-        Trajectory ia_l_frt2 = robot.trajectoryBuilder(bare2.end())
-                .lineToLinearHeading(inauntru2BLUE
-                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(30))
-//        )
-                .addTemporalMarker(0, () -> {
-                    robot.setAbsortiePower(POWER_ABS);
-                })
-//                .addTemporalMarker(time -> time * 0.9, () -> {
-//                    robot.setAbsortiePower(0);
-//                })
-                .build();
-        robot.followTrajectory(ia_l_frt2);
-        robot.setAbsortiePower(POWER_ABS);
-
-        timp.reset();
-
-        while (
-                (robot.color.red() <= RED)
-                        && timp.seconds() <= SEC && opModeIsActive()) {
-            robot.setMotorPowers(lowPower, lowPower, lowPower, lowPower);
-            robot.setAbsortiePower(POWER_ABS);
-            telemetry.addData("Red  ", robot.color.red());
-            telemetry.update();
-        }
-        if (robot.color.red() > RED) {
-            telemetry.addLine("l-am luat in pula");
-            telemetry.update();
-        }
-        robot.setAbsortiePower(-POWER_ABS);
-        robot.setMotorPowers(0, 0, 0, 0);
-
-
-        Trajectory du_l_frt2 = robot.trajectoryBuilder(robot.getPoseEstimate())
-                .lineToLinearHeading(back_to_initial2BLUE
-                        , SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(30))
-//        )
-                .addTemporalMarker(0, () -> {
-                    robot.setAbsortiePower(-POWER_ABS);
-                })
-                .addTemporalMarker(0.5, () -> {
-                    robot.brat.setPower(-1);
-                })
-                .addTemporalMarker(time -> time * 0.8, () -> {
-                    robot.setAbsortiePower(0);
-                })
-                .addTemporalMarker(time -> time * 0.9, () -> {
-                    robot.brat.setPower(0);
-                })
-                .build();
-        robot.followTrajectory(du_l_frt2);
-
-        Trajectory right2 = robot.trajectoryBuilder(du_l_frt2.end())
-                .lineToLinearHeading(la_hub_pose3BLUE)
-                .addDisplacementMarker(() -> {
-                    robot.cuva.setPosition(POZITIE_ARUNCA_CUVA);
-                })
-                .build();
-        robot.followTrajectory(right2);
-        sleep(sleep);
-        robot.cuva.setPosition(POZITIE_NORMAL_CUVA);
-
-        TrajectorySequence park = robot.trajectorySequenceBuilder(right2.end())
-                .lineToLinearHeading(new Pose2d(11.004788048944423, 68.8000000, Math.toRadians(178)))
-                .lineToLinearHeading(park_poseBLUE
-                        , SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(40))
-//        )
-                .strafeLeft(25)
-                .addTemporalMarker(0, () -> {
-                    robot.brat.setPower(1);
-                })
-                .addTemporalMarker(0.6, () -> {
+                .addTemporalMarker(0.7, () -> {
                     robot.brat.setPower(0);
                 })
                 .build();
